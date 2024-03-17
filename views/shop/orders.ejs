@@ -1,0 +1,101 @@
+<%- include('../includes/head.ejs') %>
+  <script type="module" src="/scripts/orders.js"></script>
+  </head>
+
+  <body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main class="px-4">
+      <h1 class="text-4xl font-bold">Orders Page</h1>
+
+      <form id="changeUserForm" action="/orders" method="post" class="mt-2">
+        <input type="hidden" name="changeUser" value="true">
+        
+        <div class="flex flex-row items-center gap-x-2">
+          <label for="userId">Cart of: </label>
+
+          <select name="userId" id="userId" class="border px-2 py-1 border-solid border-black">
+            <% for (const user of users) { %>
+              <% if (selectedUserId === user.id) { %>
+              <option value="<%= user.id %>" selected><%= user.name %></option>
+              <% } else { %>
+              <option value="<%= user.id %>"><%= user.name %></option>
+              <% } %>              
+            <% } %>
+          </select>
+        </div>
+      </form>
+      
+      <% if (orders.length <= 0) { %>
+
+      <div class="w-full mt-2">
+        <p>There are no products you order  .</p>
+      </div>
+        
+      <% } else { %>
+
+      <p class="text-xl">Total price: <span class="font-medium">$<%= totalPrice %></span></p>
+
+      <table class="w-full mt-2 table-auto border-collapse border-2 border-slate-500">
+        <thead>
+          <tr>
+            <th class="border-b-2 border-x border-b-slate-500">Order ID</th>
+            <th class="border-b-2 border-x border-b-slate-500">Name</th>
+            <th class="border-b-2 border-x border-b-slate-500">Price</th>
+            <th class="border-b-2 border-x border-b-slate-500">Image</th>
+            <th class="border-b-2 border-x border-b-slate-500">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+        <% orders.forEach((order, idx) => { %>
+          <% if (order.products.length <= 0) { %>
+
+          <tr>
+            <td>No Data.</td>
+            <td>No Data.</td>
+            <td>No Data.</td>
+            <td>No Data.</td>
+            <td>No Data.</td>
+          </tr>
+
+          <% } else { %>
+
+          
+            <% order.products.forEach((product, idx) => { %>
+            
+            <tr>
+              <% if (order.products.length > 0 && idx === 0) { %>
+              
+                <td class="border text-center" rowspan="<%= order.products.length %>"><%= order.id %></td>
+              
+              <% } %>
+              
+              <td class="border px-2"><%= order.products[idx].title %></td>
+              <td class="border px-2"><%= order.products[idx].price %></td>
+              <td class="border p-2 group">
+                <figure class="w-full h-[100px] overflow-hidden">
+                  <img
+                    src="<%= order.products[idx].imageUrl %>"
+                    alt="<%= order.products[idx].title %>"
+                    class="w-full h-full object-center object-cover transition duration-300 ease-in-out group-hover:scale-125"
+                  />
+                </figure>
+              </td>
+              <td class="border text-center"><%= order.products[idx].orderItem.quantity %></td>
+
+            </tr>
+
+            <% }) %>
+
+          <% } %>
+
+        <% }) %>
+
+        </tbody>
+      </table>
+      
+      <% } %>
+
+    </main>
+<%- include('../includes/end.ejs') %>
